@@ -139,7 +139,7 @@ export const Flag: React.FC<FlagProps> = ({
   }, [svgContent, width, calculatedHeight, className, style, showBorder, borderColor, borderWidth, clickable, alt, countryInfo, country]);
 
   // Handle click
-  const handleClick = (event: React.MouseEvent) => {
+  const handleClick = (_event: React.MouseEvent) => {
     if (clickable && onClick) {
       onClick(normalizedCountry);
     }

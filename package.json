@@ -12,8 +12,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "node scripts/generate-country-list.js && rollup -c",
-    "dev": "rollup -c -w",
+    "build": "node scripts/generate-country-list.js && npx rollup -c",
+    "dev": "npx rollup -c -w",
     "clean": "rimraf dist",
     "prepublishOnly": "npm run clean && npm run build",
     "test": "jest",

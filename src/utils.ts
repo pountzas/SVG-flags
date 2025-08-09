@@ -2,7 +2,7 @@ import { CountryCode, CountryInfo } from './types';
 import { AVAILABLE_COUNTRIES, isAvailableCountry } from './country-list';
 
 // Import all SVG files directly
-const flagSvgs: Record<string, string> = {};
+// const flagSvgs: Record<string, string> = {};
 
 // This will be populated at build time
 // For now, let's create a simple fallback
@@ -57,7 +57,7 @@ export const loadSvgContent = async (country: CountryCode): Promise<string | nul
  */
 export const extractViewBox = (svg: string): string | null => {
   const viewBoxMatch = svg.match(/viewBox="([^"]+)"/);
-  return viewBoxMatch ? viewBoxMatch[1] : null;
+  return viewBoxMatch ? viewBoxMatch[1] || null : null;
 };
 
 /**
@@ -67,7 +67,7 @@ export const extractDimensions = (svg: string): { width: number; height: number 
   const widthMatch = svg.match(/width="([^"]+)"/);
   const heightMatch = svg.match(/height="([^"]+)"/);
   
-  if (widthMatch && heightMatch) {
+  if (widthMatch && heightMatch && widthMatch[1] && heightMatch[1]) {
     return {
       width: parseInt(widthMatch[1], 10),
       height: parseInt(heightMatch[1], 10)
@@ -128,7 +128,7 @@ export const makeSvgAccessible = (svg: string, alt: string): string => {
  * Get all available country codes from the flags directory
  */
 export const getAvailableCountryCodes = (): CountryCode[] => {
-  return AVAILABLE_COUNTRIES as CountryCode[];
+  return [...AVAILABLE_COUNTRIES] as CountryCode[];
 };
 
 /**

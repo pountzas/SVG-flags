@@ -110,6 +110,7 @@ export const FlagSelector: React.FC<FlagSelectorProps> = ({
       document.addEventListener('click', handleClickOutside);
       return () => document.removeEventListener('click', handleClickOutside);
     }
+    return undefined;
   }, [isOpen, handleClickOutside]);
 
   const selectedCountry = value ? getCountryInfo(normalizeCountryCode(value)) : null;

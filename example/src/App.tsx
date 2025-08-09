@@ -13,7 +13,7 @@ function App() {
   const [selectedCountry, setSelectedCountry] = useState('us');
 
   return (
-    <div style={{ padding: '18px', fontFamily: 'Arial, sans-serif', textAlign: 'left' }}>
+    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', textAlign: 'left' }}>
       <h1>SVG Flags Demo</h1>
       
       <section style={{ marginBottom: '30px' }}>
