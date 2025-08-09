@@ -20,7 +20,8 @@
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write src/**/*.{ts,tsx}",
     "type-check": "tsc --noEmit",
-    "generate-countries": "node scripts/generate-country-list.js"
+    "generate-countries": "node scripts/generate-country-list.js",
+    "setup-flags": "node scripts/copy-flags-to-public.js"
   },
   "keywords": [
     "svg",

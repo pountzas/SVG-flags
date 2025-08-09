@@ -1,5 +1,5 @@
 // Auto-generated file - do not edit manually
-// Generated on: 2025-08-09T09:47:19.899Z
+// Generated on: 2025-08-09T11:10:46.914Z
 
 export const AVAILABLE_COUNTRIES = [
   "ad",

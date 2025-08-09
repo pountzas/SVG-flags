@@ -13,13 +13,34 @@ import {
 // Import all SVG files dynamically
 const loadSvgFile = async (countryCode: string): Promise<string | null> => {
   try {
-    // Try to fetch the SVG file from the flags directory
-    const response = await fetch(`/flags/${countryCode}.svg`);
-    if (!response.ok) {
-      throw new Error(`Failed to load flag for ${countryCode}`);
+    // Try multiple paths to find the SVG file
+    const possiblePaths = [
+      // When installed as a package
+      `/node_modules/svg-flags/flags/${countryCode}.svg`,
+      // When served from public directory
+      `/flags/${countryCode}.svg`,
+      // When using a CDN or different path structure
+      `https://unpkg.com/svg-flags@latest/flags/${countryCode}.svg`,
+      // Fallback to relative path
+      `./flags/${countryCode}.svg`
+    ];
+
+    for (const path of possiblePaths) {
+      try {
+        const response = await fetch(path);
+        if (response.ok) {
+          const svgContent = await response.text();
+          return svgContent;
+        }
+      } catch (error) {
+        // Continue to next path
+        continue;
+      }
     }
-    const svgContent = await response.text();
-    return svgContent;
+
+    // If all paths fail, return null
+    console.warn(`Failed to load flag for country: ${countryCode}`);
+    return null;
   } catch (error) {
     console.warn(`Failed to load flag for country: ${countryCode}`, error);
     return null;

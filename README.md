@@ -23,6 +23,19 @@ yarn add svg-flags
 pnpm add svg-flags
 ```
 
+## Setup (Required)
+
+After installation, you need to copy the SVG flag files to your project's public directory:
+
+```bash
+# Run this command in your project root
+npx svg-flags setup-flags
+```
+
+This will copy all 224 flag SVG files to your project's `public/flags/` directory.
+
+**Note**: This step is required for the flags to display correctly. The Flag component fetches SVG files from `/flags/{country-code}.svg`.
+
 ## Quick Start
 
 ```tsx
@@ -213,6 +226,48 @@ This package is fully compatible with:
 - Firefox 55+
 - Safari 12+
 - Edge 79+
+
+## Troubleshooting
+
+### Flags Not Loading (404 Errors)
+
+If you see 404 errors in the browser console when trying to load flags, make sure you've run the setup command:
+
+```bash
+npx svg-flags setup-flags
+```
+
+This copies the SVG files to your project's `public/flags/` directory.
+
+### Manual Setup
+
+If the automatic setup doesn't work, manually copy the flag files:
+
+1. Find the `flags` directory in `node_modules/svg-flags/`
+2. Copy all `.svg` files to your project's `public/flags/` directory
+3. Ensure your web server serves static files from the public directory
+
+### Next.js Projects
+
+For Next.js projects, make sure your `next.config.js` includes:
+
+```js
+module.exports = {
+  // ... other config
+  async rewrites() {
+    return [
+      {
+        source: "/flags/:path*",
+        destination: "/flags/:path*",
+      },
+    ];
+  },
+};
+```
+
+### Vite Projects
+
+For Vite projects, the files should be accessible automatically if placed in the `public` directory.
 
 ## Contributing
 
