@@ -1,0 +1,79 @@
+{
+  "name": "svg-flags",
+  "version": "1.0.0",
+  "description": "A comprehensive collection of SVG country flags for web applications",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "flags",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node scripts/generate-country-list.js && rollup -c",
+    "dev": "rollup -c -w",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "jest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "format": "prettier --write src/**/*.{ts,tsx}",
+    "type-check": "tsc --noEmit",
+    "generate-countries": "node scripts/generate-country-list.js"
+  },
+  "keywords": [
+    "svg",
+    "flags",
+    "country",
+    "national",
+    "icons",
+    "react",
+    "vue",
+    "angular",
+    "web",
+    "frontend"
+  ],
+  "author": {
+    "name": "Nikos Pountzas",
+    "email": "nikos@pountzas.gr"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pountzas/svg-flags.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pountzas/svg-flags/issues"
+  },
+  "homepage": "https://github.com/pountzas/svg-flags#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/jest": "^29.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.0",
+    "rollup": "^3.0.0",
+    "rollup-plugin-dts": "^5.0.0",
+    "@rollup/plugin-terser": "^0.4.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
