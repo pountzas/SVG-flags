@@ -1,10 +1,13 @@
 {
   "name": "svg-flags",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A comprehensive collection of SVG country flags for web applications",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "svg-flags": "scripts/copy-flags-to-public.js"
+  },
   "files": [
     "dist",
     "flags",
@@ -12,7 +15,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "node scripts/generate-country-list.js && npx rollup -c",
+    "build": "node scripts/generate-country-list.js && node scripts/embed-svg-content.js && npx rollup -c",
     "dev": "npx rollup -c -w",
     "clean": "rimraf dist",
     "prepublishOnly": "npm run clean && npm run build",
@@ -21,7 +24,8 @@
     "format": "prettier --write src/**/*.{ts,tsx}",
     "type-check": "tsc --noEmit",
     "generate-countries": "node scripts/generate-country-list.js",
-    "setup-flags": "node scripts/copy-flags-to-public.js"
+    "setup-flags": "node scripts/copy-flags-to-public.js",
+    "embed-flags": "node scripts/embed-svg-content.js"
   },
   "keywords": [
     "svg",

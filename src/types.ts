@@ -8,7 +8,7 @@ export interface FlagProps {
   /** CSS class name for styling */
   className?: string;
   /** Additional CSS styles */
-  style?: React.CSSProperties;
+  style?: Record<string, string | number>;
   /** Alt text for accessibility */
   alt?: string;
   /** Whether the flag should be clickable */
@@ -21,6 +21,8 @@ export interface FlagProps {
   borderColor?: string;
   /** Border width */
   borderWidth?: number;
+  /** Custom fallback content when country code is invalid (e.g., '🌍', '🏳️', or custom text) */
+  fallback?: string;
 }
 
 export interface FlagData {

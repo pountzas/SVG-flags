@@ -9,46 +9,11 @@ import {
   makeSvgAccessible,
   getCountryInfo
 } from '../utils';
-
-// Import all SVG files dynamically
-const loadSvgFile = async (countryCode: string): Promise<string | null> => {
-  try {
-    // Try multiple paths to find the SVG file
-    const possiblePaths = [
-      // When installed as a package
-      `/node_modules/svg-flags/flags/${countryCode}.svg`,
-      // When served from public directory
-      `/flags/${countryCode}.svg`,
-      // When using a CDN or different path structure
-      `https://unpkg.com/svg-flags@latest/flags/${countryCode}.svg`,
-      // Fallback to relative path
-      `./flags/${countryCode}.svg`
-    ];
-
-    for (const path of possiblePaths) {
-      try {
-        const response = await fetch(path);
-        if (response.ok) {
-          const svgContent = await response.text();
-          return svgContent;
-        }
-      } catch (error) {
-        // Continue to next path
-        continue;
-      }
-    }
-
-    // If all paths fail, return null
-    console.warn(`Failed to load flag for country: ${countryCode}`);
-    return null;
-  } catch (error) {
-    console.warn(`Failed to load flag for country: ${countryCode}`, error);
-    return null;
-  }
-};
+import { getEmbeddedFlag } from '../embedded-flags';
 
 /**
  * Flag component that displays SVG country flags
+ * Uses embedded SVG content for instant loading - no HTTP requests needed!
  */
 export const Flag: React.FC<FlagProps> = ({
   country,
@@ -62,6 +27,7 @@ export const Flag: React.FC<FlagProps> = ({
   showBorder = false,
   borderColor = '#e5e7eb',
   borderWidth = 1,
+  fallback = '⚠️',
   ...props
 }) => {
   const [svgContent, setSvgContent] = useState<string | null>(null);
@@ -81,7 +47,7 @@ export const Flag: React.FC<FlagProps> = ({
     return width * (336 / 512); // Default height based on common flag ratio
   }, [height, width, svgContent]);
 
-  // Load SVG content
+  // Load SVG content instantly from embedded data
   useEffect(() => {
     if (!isValidCountryCode(normalizedCountry)) {
       setError(`Invalid country code: ${country}`);
@@ -89,27 +55,23 @@ export const Flag: React.FC<FlagProps> = ({
       return;
     }
 
-    const loadFlag = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        
-        // Load actual SVG file
-        const content = await loadSvgFile(normalizedCountry);
-        
-        if (content) {
-          setSvgContent(content);
-        } else {
-          setError(`Flag not found for country: ${country}`);
-        }
-      } catch (err) {
-        setError(`Failed to load flag for ${country}: ${err instanceof Error ? err.message : 'Unknown error'}`);
-      } finally {
-        setIsLoading(false);
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Get SVG content instantly from embedded data
+      const content = getEmbeddedFlag(normalizedCountry);
+      
+      if (content) {
+        setSvgContent(content);
+      } else {
+        setError(`Flag not found for country: ${country}`);
       }
-    };
-
-    loadFlag();
+    } catch (err) {
+      setError(`Failed to load flag for ${country}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setIsLoading(false);
+    }
   }, [normalizedCountry, country]);
 
   // Process SVG content
@@ -187,7 +149,7 @@ export const Flag: React.FC<FlagProps> = ({
         style={{
           width,
           height: calculatedHeight,
-          backgroundColor: '#f3f4f6',
+          backgroundColor: '#1e2939',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -196,7 +158,7 @@ export const Flag: React.FC<FlagProps> = ({
         }}
         className={className}
       >
-        <span style={{ fontSize: '12px', color: '#6b7280' }}>Loading...</span>
+        <span ></span>
       </div>
     );
   }
@@ -207,17 +169,19 @@ export const Flag: React.FC<FlagProps> = ({
         style={{
           width,
           height: calculatedHeight,
-          backgroundColor: '#fef2f2',
-          border: '1px solid #fecaca',
+          backgroundColor: '',
+          border: '',
           borderRadius: '4px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          fontSize: Math.min(width, calculatedHeight) ,
+          color: '#dc2626'
         }}
         className={className}
         title={error}
       >
-        <span style={{ fontSize: '12px', color: '#dc2626' }}>⚠️</span>
+        {fallback}
       </div>
     );
   }

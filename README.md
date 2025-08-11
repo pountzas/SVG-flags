@@ -23,9 +23,18 @@ yarn add svg-flags
 pnpm add svg-flags
 ```
 
-## Setup (Required)
+## ⚡ Instant Loading (No Setup Required!)
 
-After installation, you need to copy the SVG flag files to your project's public directory:
+The package now includes **embedded SVG content** for instant loading. No setup required!
+
+- 🚀 **Zero HTTP requests** - All flags load instantly
+- 📦 **No file copying** - Everything is included in the package
+- ⚡ **Perfect for tables** - 100+ flags load in milliseconds
+- 🎯 **No 404 errors** - All flags are guaranteed to work
+
+## Legacy Setup (Optional)
+
+If you prefer the old approach with external files:
 
 ```bash
 # Run this command in your project root
@@ -33,8 +42,6 @@ npx svg-flags setup-flags
 ```
 
 This will copy all 224 flag SVG files to your project's `public/flags/` directory.
-
-**Note**: This step is required for the flags to display correctly. The Flag component fetches SVG files from `/flags/{country-code}.svg`.
 
 ## Quick Start
 
@@ -47,6 +54,10 @@ function App() {
       <Flag country="us" width={32} />
       <Flag country="gb" width={48} height={32} />
       <Flag country="fr" width={64} showBorder />
+
+      {/* Custom fallback for invalid country codes */}
+      <Flag country="invalid" fallback="🏳️" />
+      <Flag country="unknown" fallback="❓" />
     </div>
   );
 }
@@ -73,6 +84,7 @@ import { Flag } from "svg-flags";
   showBorder={true} // Show border around flag
   borderColor="#ccc" // Border color
   borderWidth={1} // Border width
+  fallback="🏳️" // Custom fallback for invalid country codes
 />;
 ```
 
@@ -117,6 +129,7 @@ function CountrySelector() {
 | `showBorder`  | `boolean`                   | `false`     | Whether to show a border around the flag                       |
 | `borderColor` | `string`                    | `'#e5e7eb'` | Border color                                                   |
 | `borderWidth` | `number`                    | `1`         | Border width                                                   |
+| `fallback`    | `string`                    | `'🌍'`      | Custom fallback content when country code is invalid           |
 
 ### FlagSelector Props
 

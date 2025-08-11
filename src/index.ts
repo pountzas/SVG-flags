@@ -34,6 +34,15 @@ export {
 export { AVAILABLE_COUNTRIES, isAvailableCountry } from './country-list';
 export type { AvailableCountryCode } from './country-list';
 
+// Embedded flags (instant loading - no HTTP requests)
+export { 
+  EMBEDDED_FLAGS, 
+  getEmbeddedFlag, 
+  getEmbeddedCountryCodes, 
+  isEmbeddedCountryAvailable 
+} from './embedded-flags';
+export type { EmbeddedCountryCode } from './embedded-flags';
+
 // Default export for convenience
 import Flag from './components/Flag';
 export default Flag;
