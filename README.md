@@ -304,3 +304,21 @@ MIT License - see LICENSE file for details.
 - TypeScript support
 - Search functionality
 - Accessibility features
+
+## Releasing
+
+Versions are published automatically by [semantic-release](https://github.com/semantic-release/semantic-release) when commits land on `main`.
+
+**Commit / PR titles** (squash-merge so the PR title becomes the release commit):
+
+- `fix:` or `perf:` — patch (`1.0.5` → `1.0.6`)
+- `feat:` — minor (`1.0.5` → `1.1.0`)
+- `feat!:` / `fix!:` or a `BREAKING CHANGE:` footer — major (`1.0.5` → `2.0.0`)
+- `chore:`, `docs:`, `ci:`, `test:` — no npm publish
+
+**One-time npm setup** (package owner):
+
+1. On [npmjs.com/package/svg-flags](https://www.npmjs.com/package/svg-flags) open **Settings → Trusted Publisher**.
+2. Add GitHub Actions: owner `pountzas`, repository `SVG-flags`, workflow `release.yml`, environment `npm`.
+3. After the first successful trusted publish, delete the GitHub secret `NPM_TOKEN` if it still exists.
+4. In the GitHub repo, prefer **squash merging** pull requests.
