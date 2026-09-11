@@ -45,27 +45,49 @@ This will copy all 224 flag SVG files to your project's `public/flags/` director
 
 ## React Native / Expo
 
-`react-dom` is an optional peer. Expo and React Native apps can install `svg-flags` without it.
+Expo and React Native apps do **not** need `react-dom`. It is an optional peer (`peerDependenciesMeta`), so install works without `--legacy-peer-deps`.
+
+### Install (Expo)
 
 ```bash
-npm i svg-flags react-native-svg
-# Expo (pins a compatible react-native-svg):
 npx expo install react-native-svg
+npm install svg-flags@^1.1.0
 ```
 
-### Flag component (Metro picks the native build)
+### Install (React Native CLI)
+
+```bash
+npm install svg-flags@^1.1.0 react-native-svg
+# then follow react-native-svg's linking docs for your RN version
+```
+
+Metro resolves the native entry (`dist/index.native.js`) automatically via the package `"react-native"` / `exports` field.
+
+### Use the native `<Flag />`
 
 ```tsx
 import { Flag } from "svg-flags";
+import { View } from "react-native";
 
 export function CountryBadge() {
-  return <Flag country="us" width={32} />;
+  return (
+    <View>
+      <Flag country="us" width={32} />
+      <Flag country="gr" width={48} showBorder />
+      <Flag
+        country="de"
+        width={40}
+        clickable
+        onClick={(code) => console.log(code)}
+      />
+    </View>
+  );
 }
 ```
 
-### Headless: embedded SVG + SvgXml
+### Alternative: `getEmbeddedFlag` + `SvgXml`
 
-Works without the React Flag component (any RN/Expo screen):
+If you prefer not to use the React component (or want full control over layout):
 
 ```tsx
 import { getEmbeddedFlag } from "svg-flags";
@@ -78,7 +100,11 @@ export function UsFlag() {
 }
 ```
 
-`FlagSelector` stays web-only (DOM inputs). On native, use `Flag` or `getEmbeddedFlag`.
+`getEmbeddedFlag` returns the raw SVG string and does not require React.
+
+### Web-only: `FlagSelector`
+
+`FlagSelector` uses DOM inputs and is **web-only**. On React Native / Expo, use `<Flag />` or `getEmbeddedFlag` + `SvgXml` instead.
 
 ## Quick Start
 
