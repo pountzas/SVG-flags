@@ -1,11 +1,7 @@
 import { CountryCode, CountryInfo } from './types';
 import { AVAILABLE_COUNTRIES, isAvailableCountry } from './country-list';
+import { getEmbeddedFlag } from './embedded-flags';
 
-// Import all SVG files directly
-// const flagSvgs: Record<string, string> = {};
-
-// This will be populated at build time
-// For now, let's create a simple fallback
 const createFallbackSvg = (countryCode: string): string => {
   return `<svg width="512" height="336" viewBox="0 0 512 336" xmlns="http://www.w3.org/2000/svg">
     <rect width="512" height="336" fill="#f0f0f0"/>
@@ -38,18 +34,18 @@ export const getFlagPath = (country: CountryCode): string => {
 };
 
 /**
- * Load SVG content from file
+ * Load SVG content for a country code.
+ * Uses the pre-embedded flag map so Metro / Expo Native never see
+ * Vite-only dynamic `import('...svg?raw')` (which fails transform).
  */
 export const loadSvgContent = async (country: CountryCode): Promise<string | null> => {
-  try {
-    // Try to import the SVG file dynamically
-    const svgModule = await import(`../flags/${country}.svg?raw`);
-    return svgModule.default;
-  } catch (error) {
-    console.warn(`Failed to load flag for country: ${country}`, error);
-    // Return a fallback SVG
-    return createFallbackSvg(country);
+  const normalized = normalizeCountryCode(country);
+  const embedded = getEmbeddedFlag(normalized);
+  if (embedded) {
+    return embedded;
   }
+  console.warn(`Failed to load flag for country: ${country}`);
+  return createFallbackSvg(normalized);
 };
 
 /**

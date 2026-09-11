@@ -51,13 +51,13 @@ Expo and React Native apps do **not** need `react-dom`. It is an optional peer (
 
 ```bash
 npx expo install react-native-svg
-npm install svg-flags@^1.1.0
+npm install svg-flags@^1.1.1
 ```
 
 ### Install (React Native CLI)
 
 ```bash
-npm install svg-flags@^1.1.0 react-native-svg
+npm install svg-flags@^1.1.1 react-native-svg
 # then follow react-native-svg's linking docs for your RN version
 ```
 
@@ -324,27 +324,36 @@ If the automatic setup doesn't work, manually copy the flag files:
 2. Copy all `.svg` files to your project's `public/flags/` directory
 3. Ensure your web server serves static files from the public directory
 
-### Next.js Projects
+### Next.js (App Router or Pages)
 
-For Next.js projects, make sure your `next.config.js` includes:
+No `next.config` rewrites or `public/flags` copy are required. Flags ship as
+embedded SVG strings, so `<Flag />` renders synchronously on the server and the
+client.
 
-```js
-module.exports = {
-  // ... other config
-  async rewrites() {
-    return [
-      {
-        source: "/flags/:path*",
-        destination: "/flags/:path*",
-      },
-    ];
-  },
-};
+```tsx
+import { Flag } from "svg-flags";
+
+export default function LanguageRow() {
+  return <Flag country="gr" width={24} showBorder />;
+}
 ```
 
-### Vite Projects
+If you use interactive props (`onClick`, hover scale), wrap usage in a Client
+Component (`"use client"`). Static display works in Server Components.
 
-For Vite projects, the files should be accessible automatically if placed in the `public` directory.
+### Vite / CRA / plain React
+
+```tsx
+import { Flag } from "svg-flags";
+
+export function App() {
+  return <Flag country="us" width={32} />;
+}
+```
+
+`loadSvgContent(code)` also resolves from the embedded map (Promise API kept for
+compatibility). It no longer uses Vite-only `import('*.svg?raw')`, so the same
+package works in Metro, webpack, Turbopack, and Vite.
 
 ## Contributing
 
@@ -359,6 +368,13 @@ For Vite projects, the files should be accessible automatically if placed in the
 MIT License - see LICENSE file for details.
 
 ## Changelog
+
+### 1.1.1
+
+- Fix Metro / Expo: remove Vite-only `import('*.svg?raw')` from `loadSvgContent`
+- Web `<Flag />` loads embedded SVG synchronously (React + Next.js SSR friendly)
+- Same embedded path for React Native (`SvgXml`), React DOM, and Next.js
+- Docs: Next.js needs no `public/flags` rewrites
 
 ### 1.0.0
 
