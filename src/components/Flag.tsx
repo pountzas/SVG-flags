@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { FlagProps } from '../types';
-import { 
-  normalizeCountryCode, 
-  isValidCountryCode, 
+import {
+  normalizeCountryCode,
+  isValidCountryCode,
   resizeSvg,
   addSvgClasses,
   addSvgStyles,
@@ -12,8 +12,9 @@ import {
 import { getEmbeddedFlag } from '../embedded-flags';
 
 /**
- * Flag component that displays SVG country flags
- * Uses embedded SVG content for instant loading - no HTTP requests needed!
+ * Web Flag component. Reads embedded SVG strings synchronously so React DOM,
+ * Vite, and Next.js (SSR / RSC-friendly when not using click handlers) all work
+ * without Vite-only `?raw` dynamic imports or client-only loading flashes.
  */
 export const Flag: React.FC<FlagProps> = ({
   country,
@@ -30,77 +31,36 @@ export const Flag: React.FC<FlagProps> = ({
   fallback = '⚠️',
   ...props
 }) => {
-  const [svgContent, setSvgContent] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const normalizedCountry = useMemo(() => normalizeCountryCode(country), [country]);
   const countryInfo = useMemo(() => getCountryInfo(normalizedCountry), [normalizedCountry]);
+  const calculatedHeight = height ?? width * (336 / 512);
 
-  // Calculate height based on aspect ratio if not provided
-  const calculatedHeight = useMemo(() => {
-    if (height) return height;
-    if (svgContent) {
-      const aspectRatio = 512 / 336; // Default aspect ratio for flags
-      return width / aspectRatio;
-    }
-    return width * (336 / 512); // Default height based on common flag ratio
-  }, [height, width, svgContent]);
-
-  // Load SVG content instantly from embedded data
-  useEffect(() => {
+  const svgContent = useMemo(() => {
     if (!isValidCountryCode(normalizedCountry)) {
-      setError(`Invalid country code: ${country}`);
-      setIsLoading(false);
-      return;
+      return null;
     }
+    return getEmbeddedFlag(normalizedCountry);
+  }, [normalizedCountry]);
 
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      // Get SVG content instantly from embedded data
-      const content = getEmbeddedFlag(normalizedCountry);
-      
-      if (content) {
-        setSvgContent(content);
-      } else {
-        setError(`Flag not found for country: ${country}`);
-      }
-    } catch (err) {
-      setError(`Failed to load flag for ${country}: ${err instanceof Error ? err.message : 'Unknown error'}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [normalizedCountry, country]);
-
-  // Process SVG content
   const processedSvg = useMemo(() => {
-    if (!svgContent) return null;
+    if (!svgContent) {
+      return null;
+    }
 
-    let processed = svgContent;
+    let processed = resizeSvg(svgContent, width, calculatedHeight);
 
-    // Resize SVG
-    processed = resizeSvg(processed, width, calculatedHeight);
-
-    // Add CSS classes
     if (className) {
       processed = addSvgClasses(processed, className);
     }
 
-    // Add inline styles
     const svgStyles: Record<string, string> = {
       display: 'block',
       maxWidth: '100%',
-      height: 'auto'
+      height: 'auto',
+      ...Object.fromEntries(
+        Object.entries(style).filter(([, value]) => value !== undefined).map(([key, value]) => [key, String(value)])
+      )
     };
-
-    // Add custom styles from props
-    Object.entries(style).forEach(([key, value]) => {
-      if (value !== undefined) {
-        svgStyles[key] = String(value);
-      }
-    });
 
     if (showBorder) {
       svgStyles['border'] = `${borderWidth}px solid ${borderColor}`;
@@ -114,21 +74,31 @@ export const Flag: React.FC<FlagProps> = ({
 
     processed = addSvgStyles(processed, svgStyles);
 
-    // Make accessible
     const altText = alt || `${countryInfo?.name || country} flag`;
     processed = makeSvgAccessible(processed, altText);
 
     return processed;
-  }, [svgContent, width, calculatedHeight, className, style, showBorder, borderColor, borderWidth, clickable, alt, countryInfo, country]);
+  }, [
+    svgContent,
+    width,
+    calculatedHeight,
+    className,
+    style,
+    showBorder,
+    borderColor,
+    borderWidth,
+    clickable,
+    alt,
+    countryInfo,
+    country
+  ]);
 
-  // Handle click
   const handleClick = (_event: React.MouseEvent) => {
     if (clickable && onClick) {
       onClick(normalizedCountry);
     }
   };
 
-  // Handle hover effects for clickable flags
   const handleMouseEnter = (event: React.MouseEvent) => {
     if (clickable) {
       const target = event.currentTarget as HTMLElement;
@@ -143,51 +113,33 @@ export const Flag: React.FC<FlagProps> = ({
     }
   };
 
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          width,
-          height: calculatedHeight,
-          backgroundColor: '#1e2939',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: showBorder ? '4px' : '0',
-          border: showBorder ? `${borderWidth}px solid ${borderColor}` : 'none'
-        }}
-        className={className}
-      >
-        <span ></span>
-      </div>
-    );
-  }
+  if (!processedSvg) {
+    const error =
+      !isValidCountryCode(normalizedCountry)
+        ? `Invalid country code: ${country}`
+        : `Flag not found for country: ${country}`;
 
-  if (error) {
     return (
       <div
         style={{
           width,
           height: calculatedHeight,
-          backgroundColor: '',
-          border: '',
+          backgroundColor: '#f3f4f6',
+          border: showBorder ? `${borderWidth}px solid ${borderColor}` : '1px solid #fecaca',
           borderRadius: '4px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: Math.min(width, calculatedHeight) ,
+          fontSize: Math.min(width, calculatedHeight) * 0.45,
           color: '#dc2626'
         }}
         className={className}
         title={error}
+        {...props}
       >
         {fallback}
       </div>
     );
-  }
-
-  if (!processedSvg) {
-    return null;
   }
 
   return (

@@ -65,4 +65,38 @@ if (pkg['react-native'] !== 'dist/index.native.js') {
 }
 console.log('✅ package.json react-native field OK');
 
-console.log('\n🎉 All tests passed!');
+const nativeEsm = path.join(__dirname, '../dist/index.native.esm.js');
+const nativeBundles = [nativeEntry, nativeEsm].filter((p) => fs.existsSync(p));
+const webBundles = [
+  path.join(__dirname, '../dist/index.js'),
+  path.join(__dirname, '../dist/index.esm.js'),
+].filter((p) => fs.existsSync(p));
+
+for (const bundlePath of [...webBundles, ...nativeBundles]) {
+  const source = fs.readFileSync(bundlePath, 'utf8');
+  if (source.includes('svg?raw') || /import\s*\(\s*`[^`]*\$\{/.test(source)) {
+    console.error(`❌ ${path.basename(bundlePath)} still contains bundler-breaking dynamic SVG import`);
+    process.exit(1);
+  }
+}
+console.log('✅ Web + native bundles have no dynamic .svg?raw imports (Metro / Next / Vite safe)');
+
+const exportsField = pkg.exports && pkg.exports['.'];
+if (!exportsField || !exportsField['react-native'] || !exportsField.import || !exportsField.require) {
+  console.error('❌ package.json exports must cover react-native, import, and require');
+  process.exit(1);
+}
+console.log('✅ package.json exports cover React Native + web (React / Next.js)');
+
+const { loadSvgContent } = require('../dist/index.js');
+loadSvgContent('gr').then((svg) => {
+  if (!svg || !svg.includes('<svg')) {
+    console.error('❌ loadSvgContent("gr") failed');
+    process.exit(1);
+  }
+  console.log(`✅ loadSvgContent('gr') returned ${svg.length} chars`);
+  console.log('\n🎉 All tests passed!');
+}).catch((err) => {
+  console.error('❌ loadSvgContent failed', err);
+  process.exit(1);
+});
