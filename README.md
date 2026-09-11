@@ -1,6 +1,6 @@
 # SVG Flags
 
-A comprehensive collection of SVG country flags for web applications. This package provides high-quality, scalable flag icons that can be easily integrated into React applications.
+A comprehensive collection of SVG country flags for React web apps and React Native / Expo. High-quality, scalable flag icons with embedded SVG content for instant loading.
 
 ## Features
 
@@ -42,6 +42,69 @@ npx svg-flags setup-flags
 ```
 
 This will copy all 224 flag SVG files to your project's `public/flags/` directory.
+
+## React Native / Expo
+
+Expo and React Native apps do **not** need `react-dom`. It is an optional peer (`peerDependenciesMeta`), so install works without `--legacy-peer-deps`.
+
+### Install (Expo)
+
+```bash
+npx expo install react-native-svg
+npm install svg-flags@^1.1.0
+```
+
+### Install (React Native CLI)
+
+```bash
+npm install svg-flags@^1.1.0 react-native-svg
+# then follow react-native-svg's linking docs for your RN version
+```
+
+Metro resolves the native entry (`dist/index.native.js`) automatically via the package `"react-native"` / `exports` field.
+
+### Use the native `<Flag />`
+
+```tsx
+import { Flag } from "svg-flags";
+import { View } from "react-native";
+
+export function CountryBadge() {
+  return (
+    <View>
+      <Flag country="us" width={32} />
+      <Flag country="gr" width={48} showBorder />
+      <Flag
+        country="de"
+        width={40}
+        clickable
+        onClick={(code) => console.log(code)}
+      />
+    </View>
+  );
+}
+```
+
+### Alternative: `getEmbeddedFlag` + `SvgXml`
+
+If you prefer not to use the React component (or want full control over layout):
+
+```tsx
+import { getEmbeddedFlag } from "svg-flags";
+import { SvgXml } from "react-native-svg";
+
+export function UsFlag() {
+  const xml = getEmbeddedFlag("us");
+  if (!xml) return null;
+  return <SvgXml xml={xml} width={32} height={21} />;
+}
+```
+
+`getEmbeddedFlag` returns the raw SVG string and does not require React.
+
+### Web-only: `FlagSelector`
+
+`FlagSelector` uses DOM inputs and is **web-only**. On React Native / Expo, use `<Flag />` or `getEmbeddedFlag` + `SvgXml` instead.
 
 ## Quick Start
 
@@ -226,12 +289,13 @@ The package includes built-in accessibility features:
 
 ## React Compatibility
 
-This package is fully compatible with:
+This package works with:
 
 - **React 19** ✅
 - **React 18** ✅
 - **React 17** ✅
-- **React 16.8+** ✅ (with hooks support)
+- **React 16.8+** ✅ (hooks)
+- **React Native / Expo** ✅ (`react-native-svg`; `react-dom` optional)
 
 ## Browser Support
 
