@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/pountzas/svg-flags/compare/v1.1.0...v1.1.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* use embedded SVGs so Metro, Next.js, and Vite all load flags ([d5bdfac](https://github.com/pountzas/svg-flags/commit/d5bdfacfc3efa27bb98e8d4b66213353e483952c))
+
 # [1.1.0](https://github.com/pountzas/svg-flags/compare/v1.0.6...v1.1.0) (2026-09-11)
 
 
