@@ -1,6 +1,6 @@
 # SVG Flags
 
-A comprehensive collection of SVG country flags for web applications. This package provides high-quality, scalable flag icons that can be easily integrated into React applications.
+A comprehensive collection of SVG country flags for React web apps and React Native / Expo. High-quality, scalable flag icons with embedded SVG content for instant loading.
 
 ## Features
 
@@ -42,6 +42,43 @@ npx svg-flags setup-flags
 ```
 
 This will copy all 224 flag SVG files to your project's `public/flags/` directory.
+
+## React Native / Expo
+
+`react-dom` is an optional peer. Expo and React Native apps can install `svg-flags` without it.
+
+```bash
+npm i svg-flags react-native-svg
+# Expo (pins a compatible react-native-svg):
+npx expo install react-native-svg
+```
+
+### Flag component (Metro picks the native build)
+
+```tsx
+import { Flag } from "svg-flags";
+
+export function CountryBadge() {
+  return <Flag country="us" width={32} />;
+}
+```
+
+### Headless: embedded SVG + SvgXml
+
+Works without the React Flag component (any RN/Expo screen):
+
+```tsx
+import { getEmbeddedFlag } from "svg-flags";
+import { SvgXml } from "react-native-svg";
+
+export function UsFlag() {
+  const xml = getEmbeddedFlag("us");
+  if (!xml) return null;
+  return <SvgXml xml={xml} width={32} height={21} />;
+}
+```
+
+`FlagSelector` stays web-only (DOM inputs). On native, use `Flag` or `getEmbeddedFlag`.
 
 ## Quick Start
 
@@ -226,12 +263,13 @@ The package includes built-in accessibility features:
 
 ## React Compatibility
 
-This package is fully compatible with:
+This package works with:
 
 - **React 19** ✅
 - **React 18** ✅
 - **React 17** ✅
-- **React 16.8+** ✅ (with hooks support)
+- **React 16.8+** ✅ (hooks)
+- **React Native / Expo** ✅ (`react-native-svg`; `react-dom` optional)
 
 ## Browser Support
 
