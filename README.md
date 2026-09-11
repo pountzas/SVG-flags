@@ -25,7 +25,7 @@ pnpm add svg-flags
 
 ## ⚡ Instant Loading (No Setup Required!)
 
-The package now includes **embedded SVG content** for instant loading. No setup required!
+The package now includes **embedded SVG contents** for instant loading. No setup required!
 
 - 🚀 **Zero HTTP requests** - All flags load instantly
 - 📦 **No file copying** - Everything is included in the package
