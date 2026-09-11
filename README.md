@@ -63,7 +63,7 @@ npm install svg-flags@^1.1.1 react-native-svg
 
 Metro resolves the native entry (`dist/index.native.js`) automatically via the package `"react-native"` / `exports` field.
 
-### Use the native `<Flag />`
+### Use the native component `<Flag />`
 
 ```tsx
 import { Flag } from "svg-flags";
