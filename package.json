@@ -1,10 +1,24 @@
 {
   "name": "svg-flags",
-  "version": "1.0.5",
-  "description": "A comprehensive collection of SVG country flags for web applications",
+  "version": "1.1.0",
+  "description": "SVG country flags for React (web) and React Native / Expo, with embedded SVG strings for headless use",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
+  "react-native": "dist/index.native.js",
+  "exports": {
+    ".": {
+      "react-native": {
+        "import": "./dist/index.native.esm.js",
+        "require": "./dist/index.native.js",
+        "default": "./dist/index.native.js"
+      },
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "bin": {
     "svg-flags": "scripts/copy-flags-to-public.js"
   },
@@ -34,6 +48,9 @@
     "national",
     "icons",
     "react",
+    "react-native",
+    "expo",
+    "react-native-svg",
     "vue",
     "angular",
     "web",
@@ -76,7 +93,16 @@
   },
   "peerDependencies": {
     "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react-dom": ">=16.8.0",
+    "react-native-svg": ">=12.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    },
+    "react-native-svg": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=14.0.0"
